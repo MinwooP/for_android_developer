@@ -79,6 +79,16 @@ ex) `kotlin.*` package
   - 최초로 지정한 변수의 초깃값이 있더라도 값을 변경 가능
 
   => val로 변수를 선언해놓고 변경해야 할 때 var로 바꾸는 방법을 권장한다.
+  
+  > ```kotlin
+  > val a = 3 //이렇게 선언해놓고 
+  > // 코딩하다가 a를 사용할 일 있으면
+  > var a = 3 // 이렇게 직접 var로 바꾸라는 뜻?
+  > ```
+  >
+  > 
+  
+  
 
 <br>
 
@@ -217,7 +227,7 @@ Person person = new Person(); // 참조형으로 person 객체를 위해 참조 
   // str1 == str3
   ```
 
-  + str1, str3에는 같은 문자열이 저장되어 있는데 이런 경우, **"Hello"**를 스택에 2번 저앙하는 것이 아니라, 힙 영역의 **String pool**이라는 공간에 문자열인 "Hello"를 저장해두고 이 값을 str1, str3이 참조하도록 만든다. 
+  + str1, str3에는 같은 문자열이 저장되어 있는데 이런 경우, **"Hello"**를 스택에 2번 저장하는 것이 아니라, 힙 영역의 **String pool**이라는 공간에 문자열인 "Hello"를 저장해두고 이 값을 str1, str3이 참조하도록 만든다. 
 
     => String Pool을 이용해 필요한 경우 메모리를 재활용한다. 
 
@@ -236,9 +246,7 @@ Person person = new Person(); // 참조형으로 person 객체를 위해 참조 
   val a = 1
   val str2 = "a = ${a + 2}" // 문자열에 표현식 사용
 
-<br>
-
-<br>
+<br><br>
 
 + 형식화된 다중 문자열 사용하기
 
@@ -264,29 +272,73 @@ Person person = new Person(); // 참조형으로 person 객체를 위해 참조 
 
   => 코틀린은 변수에 아예 null을 허용하지 않아 **NullPointerException**을 방지할 수 있다.
 
-  => null을 할당하려면 자료형 뒤에 `?` 기호를 명시해야 한다. 
+  => 아예 null을 허용하지 않는 건 아니고, null을 할당하려면 자료형 뒤에 `?` 기호를 명시하면 된다.
 
 <br>
 
 ##### null을 허용한 변수 사용하기
 
-+ 세이프 콜 `?.`
-
-  null이 할당되어 있을 가능성이 있는 변수를 검사하여 안전하게 호출하도록 도와주는 기법으로 세이프 콜을 추가하려면 호출할 변수 이름 뒤에 `?.`를 작성하면 된다. 
++ null을 허용하기 : 
+  원래 코틀린에서는 변수에 null을 허용하지 않는데 꼭 null을 허용하는 변수를 사용하고 싶으면 자료형 뒤에 `?`기호를 명시하면 된다.
 
   ```kotlin
-  var str1 : String? = "HelloKotlin"
-  str1 = null
-  str1?.length // null
+  val str1 : String? = "Hello kotlin"
+  str1 = null // 널 가능
   ```
 
-  => 변수 str1을 검사한 다음 null이 아니면 str1의 멤버 변수인 length에 접근해 값을 읽도록 하는 것. str1은 null이니 length에 접근하지 않고 그대로 null을 출력한다. 
+  하지만 이렇게, null을 허용한 변수를 사용하기 위해선 조건이 있다. 
 
-+ non-null 단정기호 `!!.`
+  ```kotlin
+  ㅇfun main(){
+      var str1: String? = "Hello Kotlin"
+      str1 = null
+      println("str1: $str1 length: ${str1.length}") // 불가능
+  }
+  ```
 
-  non-null 단정기호는 변수에 할당된 값이 null이 아님을 단정하므로 컴파일러가 null 검사없이 무시한다. 따라서 변수에 null이 할당되어 있어도 컴파일은 잘 진행된다. 하지만 실행 중에 **NPE**를 발생시킨다. 
+  `str1` 변수가 null을 허용했기 때문에 이는 그냥 `str1.length` 이렇게 사용될 수 없다. 오류가 발생한다. null을 허용한 변수를 **검사**해줘야 한다. 이에 대한 방법은 `?.`, `!!.`, 조건문을 활용한 검사 등의 방법이 있다. 
 
 <br>
+
+1. 세이프 콜 `?.`\
+
+   null이 할당되어 있을 가능성이 있는 변수를 검사하여 안전하게 호출하도록 도와주는 기법으로 세이프 콜을 추가하려면 호출할 변수 이름 뒤에 `?.`를 작성하면 된다. 
+
+   ```kotlin
+   var str1 : String? = "HelloKotlin"
+   str1 = null
+   str1?.length // null
+   ```
+
+   => 변수 str1을 검사한 다음 null이 아니면 str1의 멤버 변수인 length에 접근해 값을 읽도록 하는 것. str1은 null이니 length에 접근하지 않고 그대로 null을 출력한다. 
+
+<br>
+
+2. non-null 단정기호 `!!.`
+
+   non-null 단정기호는 변수에 할당된 값이 null이 아님을 단정하므로 컴파일러가 **null 검사없이 무시**한다. 따라서 변수에 null이 할당되어 있어도 컴파일은 잘 진행된다. 하지만 실행 중에 **NPE**를 발생시킨다. 따라서, 사용자가 변수를 보고 무조건 null인 경우에만 `!!.`을 사용해줘야 한다. 만약 null이라면 이에 대한 문제는 사용자의 책임? \
+
+   ```kotlin
+   println("str1: $str1 length: ${str1!!.length}")
+   ```
+
+<br>
+
+3. 조건문을 활용해 null을 활용한 변수 검사하기
+
+   세이프 콜이나 non-null 단정 기호를 사용하는 방법 대신 조건문으로 null을 허용한 변수를 검사해도 된다. 즉, null을 허용한 변수의 null 상태 가능성을 검사하기만 하면 컴파일러는 오류를 발생시키지 않는다. 
+
+   ```kotlin
+   fun main(){
+       var str1 = String? = "Hello Kotlin"
+       str1 = null
+       // 조건식을 통해 null 상태 검사
+       val len = if(str1 != null) str1.length else -1
+       println("str1: $str1 length: ${len}")
+   }
+   ```
+
+   
 
 <br>
 
@@ -304,7 +356,7 @@ Person person = new Person(); // 참조형으로 person 객체를 위해 참조 
   if(str1 != null)
   	str1.length
   else
-  	1
+  	-1
 
 <br>
 
@@ -398,4 +450,30 @@ if(num is Int)
 <br>
 
 ## 🚩 2 - 4  코틀린 연산자
+
+
+
+
+
+
+
+#### 스터디 후
+
+isBlankOrNull() / isBlank()
+
+의 차이점
+
+string의 null을 조사하는 방법들 조사
+
+
+
++ 앨비스 연산자
+
+
+
+` a ?: b` a 객체가 null 이면 
+
+
+
++ binding을 var로 선언하는 이유? 
 

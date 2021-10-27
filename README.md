@@ -6,7 +6,7 @@
 
 ### <div align="center">목차</div>
 
-- [Kotlin](#Kotlin)
+- [Do it! Kotlin Programming](#Do-it! Kotlin Programming)
 
 
 
