@@ -109,7 +109,7 @@ class 클래스 이름 constructor(필요한 매개변수..) { // 주 생성자�
 }
 ```
 
-+ 부 생성자를 여러 개 사용할 때는 매개변수를 다르게 정의해야 한다.
++ 부 생성자를 여러 개 사용할 때는 **매개변수를 다르게 정의**해야 한다.
 
 <br>
 
@@ -248,24 +248,6 @@ class Bird constructor(var _name: String, var _wing: Int, var _beak: String, var
 
 ### init 초기화 블록은 주 생성자가 아닌 부 생성자를 이용해 객체를 생성할 때도 실행될까?
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ```kotlin
 class E {
 
@@ -300,14 +282,13 @@ fun main(){
 
 ```kotlin
 출력결과
-
 call Init Block!
 call Name Constructor!
 call Name, Age Constructor!
 call Name, Age, Height Constructor!
 ```
 
-초기화 블럭 안의 코드는 효과적으로 기본 생성자의 일부가 된다. 기본 생성자로의 위임은 보조 생성자의 첫번째 문장으로 발생한다. 그래서 모든 초기화 블럭내의 코드는 보조 생성자 몸체 전에 실행된다. 클래스가 기본 생성자를 가지지 않을때도 위임은 여전히 암시적으로 발생하고, 초기화 블럭은 여전히 실행된다.
+초기화 블럭 안의 코드는 효과적으로 기본 생성자의 일부가 된다. 기본 생성자로의 위임은 **보조 생성자의 첫번째 문장으로 발생**한다. 그래서 모든 초기화 블럭내의 코드는 보조 생성자 몸체 전에 실행된다**. 클래스가 주 생성자를 가지지 않을때도 위임은 여전히 암시적으로 발생하고, 초기화 블럭은 여전히 실행된다.**
 
 <br>
 
@@ -348,7 +329,7 @@ call Name, Age, Height Constructor!
 
 ### 📌 상속과 클래스의 계층
 
-코틀린의 모든 클래스는 Any 클래스의 하위 클래스가 되며, 상위 클래스를 명시하지 않으면 Any 클래스를 상속 받게 된다. 
+코틀린의 모든 클래스는 **Any 클래스**의 하위 클래스가 되며, 상위 클래스를 명시하지 않으면 Any 클래스를 상속 받게 된다. 
 
 <br>
 
@@ -534,6 +515,7 @@ open class Person{ // 상속 가능한 class
     constructor(firstName: String){ // 부 생성자
         println("[Person] firstName: $firstName")
     }
+    
     constructor(firstName: String, age: Int){ // 부 생성자
         println("[Person] firstName: $firstName, age: $age")
     }
@@ -551,6 +533,7 @@ class Developer : Person {
 
 fun main(){
     val sean = Developer("Sean")
+    sean.firstName
 }
 ```
 
@@ -576,24 +559,6 @@ fun main(){
 
 
 ### 위 코드에서 class `Person`의 프로퍼티는 ? 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 부 생성자에 매개변수로 정의되어 있는 `firstName: String, age: Int`는`Person` 클래스의 프로퍼티가 아니다. 
 
@@ -699,8 +664,9 @@ private class PrivateClass {
 
 class OtherClass {
     val opc = PrivateClass() // ❌ - 프로퍼티 opc가 private이어야 함
+    
     fun test(){
-        val pc = PivateClass() // 🆗 왜 여기는 접근 허용? 
+        val pc = PivateClass() // 🆗 왜 여기는 접근 허용????????????????????????????????????/
     }
 }
 
@@ -885,6 +851,8 @@ fun main() {
 
 
 
+
+
 + 객체를 선언할 때 val로 선언하는 이유는? val은 변경불가능 한데 객체의 프로퍼티를 바꾸는 경우가 있음 왜 그럴까?
 
   > val은 변경이 불가능한 것이 맞다. 하지만, 참조가 가리키는 객체의 내부값은 변경이 가능하다.
@@ -892,4 +860,8 @@ fun main() {
 + 주 생성자나 부 생성자는 모든 프로퍼티를 초기화해야하나?
 
   > 그건 아니지만 객체가 생성될 때, 모든 프로퍼티가 어떤 식으로든 초기화 되어 있어야 한다. 
+
+
+
+
 
