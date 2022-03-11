@@ -77,7 +77,7 @@ data class UserData{
 ##### ViewHolder란?
 
 + RecyclerView의 재활용 되는 Item Layout(View)를 붙잡고 관리하는 역할
-+ Adapter에서 전달받은 데이터를 Item Layout에 Bind 시켜주는 역할
++ **Adapter에서 전달받은 데이터를 Item Layout에 Bind** 시켜주는 역할
 
 + VIewHolder는 계속해서 재활용 됨
 
@@ -174,23 +174,11 @@ data class UserData{
 
 
 
-
-
------
-
-
-
-
-
-
-
-
-
 매번 사용자가 아래로 스크롤 할 때 마다 맨 위에 위치한 뷰 객체가 새로 삭제되고, 아랫 부분에서 새로 나타날 채팅방 뷰 객체를 새로 생성하면 결국 100개의 뷰 객체가 삭제되고 생성되는 것일 뿐만 아니라, 스크롤을 위아래로 왔다 갔다 하면 수 백개의 뷰 객체가 새로 생성되고 삭제됨을 반복한다.
 
 리사이클러 뷰는 사용자가 아래로 스크롤 한다고 가정했을 때, **맨 위에 존재해서 이제 곧 사라질 뷰 객체를 삭제 하지않고 아랫쪽에서 새로 나타나날 파란색 뷰 위치로 객체를 이동시킨다.** 즉 뷰 객체 자체를 재사용 하는 것인데, **중요한 점은 뷰 객체를 재사용 할 뿐이지 뷰 객체가 담고 있는 데이터(채팅방 이름)는 새로 갱신된다는 것**이다. 어쨋거나 뷰 객체를 새로 생성하지는 않으므로 효율적인 것이다.
 
-결과적으로 보자면, 맨 처음 화면에 보여질 10개 정도의 뷰 객체만을 만들고, 실제 데이터가 100개든 1000개든 원래 만들어 놓은 10개의 객체만 계속 해서 재사용 하는 것이다.
+***결과적으로 보자면, 맨 처음 화면에 보여질 10개 정도의 뷰 객체만을 만들고, 실제 데이터가 100개든 1000개든 원래 만들어 놓은 10개의 객체만 계속 해서 재사용 하는 것이다.***
 
 따라서 맨 처음 10개의 뷰객체를 기억하고 있을(홀딩) 객체가 필요한데 이 것이 ViewHolder이다. 나중에 전체 코드를 보겠지만, ViewHolder 코드 부분만 보자면 아래와 같다.
 
@@ -223,3 +211,23 @@ override fun onCreate(savedInstanceState: Bundle?) {
 + [리사이클러뷰의 원리와 사용법](https://wooooooak.github.io/android/2019/03/28/recycler_view/)
 + [멀티뷰 타입 리사이클러뷰 만들기](https://wooooooak.github.io/android/2019/04/13/RecyclerView_mutiType/)
 
+
+
+
+
+### DiffUtil과 ListAdapter 이해하고 RecyclerView에 적용하기
+
++ Recyclerview의 데이터가 변하면 Recyclerview Adapter가 제공하는 `notifyItem`메소드를 사용해서 ViewHolder 내용을 갱신할 수 있습니다.
++ 그런데 데이터가 변경되는 방식을 확인하고 그때마다 이렇게 notify를 일일이 해 주는것은 번거롭기도 하고, 또 사용하기에 따라서는 갱신이 필요없는 ViewHolder를 같이 갱신하는 불필요한 작업이 생길수도 있습니다.
+
+#### DiffUtil
+
++ DiffUtil은 **두 데이터셋을 받아서 그 차이를 계산해주는 클래스**입니다. DiffUtil을 사용하면 두 데이터 셋을 비교한 뒤 그중 변한부분만을 파악하여 Recyclerview에 반영할 수 있습니다.
+
++ DiffUtil을 사용하기 위해서는 `DiffUtil.Callback()`을 상속받아 `areItemsTheSame`으로 비교대상인 두 객체가 동일한지 확인하고, `areContentsTheSame`으로 두 아이템이 동일한 데이터를 가지는지 확인하면 됩니다.
+
+
+
+### 참고
+
++ [RecyclerView 어댑터의 데이터 빠르게 바꾸기 - ListAdapter와 DiffUtil 사용하기](https://velog.io/@l2hyunwoo/Android-RecyclerView-DiffUtil-ListAdapter)
