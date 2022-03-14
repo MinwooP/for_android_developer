@@ -4,6 +4,8 @@
 
 ## 🎖 ViewModel에 데이터 저장하기
 
+[안드로이드 공식 문서](https://developer.android.com/codelabs/basic-android-kotlin-training-viewmodel?continue=https%3A%2F%2Fdeveloper.android.com%2Fcourses%2Fpathways%2Fandroid-basics-kotlin-unit-3-pathway-3%23codelab-https%3A%2F%2Fdeveloper.android.com%2Fcodelabs%2Fbasic-android-kotlin-training-viewmodel#5)
+
 + 현재 스타터 앱의 문제
 
   + 기기 방향이 변경되는 경우와 같이 **구성이 변경되는 동안 앱 상태와 데이터를 저장하고 복원하지 않는다.** 이러한 문제는 `onSaveInstanceState()` 콜백을 사용하여 해결할 수 있습니다. 하지만 `onSaveInstanceState()` 메서드를 사용하려면 번들에 상태를 저장하는 추가 코드를 작성하고 이 상태를 검색하는 로직을 구현해야 한다, 또 번들에 저장할 수 있는 데이터의 양도 적다. 
@@ -16,9 +18,7 @@
   >
   > => 로그인 시 아이디, 비밀번호 데이터 저장, 게임 등의 앱 진행 시 현재 점수를 저장
 
-<br></br>
-
-<br></br>
+<br><br>
 
 ### App Architecture
 
@@ -44,7 +44,7 @@
 
     예를 들어 **Unscramble** 앱에서 글자가 뒤섞인 단어, 점수, 단어 수는 프래그먼트(UI 컨트롤러)에 표시됩니다. 글자가 뒤섞인 다음 단어를 고르고 점수와 단어 수를 계산하는 등의 의사 결정 코드는 `ViewModel`에 포함해야 합니다.
 
-    <br></br><br></br>
+    <br>
 
   + View model
 
@@ -52,9 +52,7 @@
 
     `ViewModel`은 Andriod 프레임워크에서 활동이나 프래그먼트가 소멸되고 다시 생성될 때 폐기되지 않는 앱 관련 데이터를 저장합니다. `ViewModel` 객체는 **구성이 변경되는 동안 자동으로 유지**되어(활동 또는 프래그먼트 인스턴스처럼 소멸되지 않음) 보유하고 있는 데이터가 다음 활동 또는 프래그먼트 인스턴스에 즉시 사용될 수 있습니다.
 
-    <br></br>
-
-    <br></br>
+    <br>
 
   + 요약
 
@@ -62,20 +60,14 @@
 
     ViewModel의 책임 : UI에 필요한 모든 데이터를 보유하고 처리합니다. 뷰 계층 구조(ex) 뷰 결합 객체)에 액세스하거나 활동 또는 프래그먼트의 참조를 보유해서는 안 됩니다. 
 
-    <br></br>
-
-    <br></br>
-
-    <br></br>
+    <br><br>
 
 ### ViewModel 추가하기
 
 + 이 작업에서는 앱 데이터(글자가 뒤섰인 단어, 단어 수, 점수)를 저장하는 `ViewModel`을 앱에 추가합니다. 
 + 앱의 아키텍쳐는 `MainActivity` => `GameFragment` => `GameViewModel`로 구성되어 있다.
 
-<br></br>
-
-<br></br>
+<br>
 
 ###### 1. `GameViewModel` class 추가하기
 
@@ -94,67 +86,45 @@ class GameViewModel : ViewModel() {
   private val viewModel: GameViewModel by viewModels()
   ```
 
-  <br></br><br></br>
+  `GameFragment` 클래스 상단에 `GameViewModel` 유형의 속성을 추가하고, `by viewModels()` **Kotlin 속성 위임**을 사용하여 `GameViewModel`을 초기화
 
-+ `GameFragment` 클래스 상단에 `GameViewModel` 유형의 속성을 추가하고, `by viewModels()` **Kotlin 속성 위임**을 사용하여 `GameViewModel`을 초기화
+  > Kotlin에서 속성 위임을 사용하면 getter-setter 책임을 다른 클래스에 넘길 수 있습니다. 이 클래스(*대리자 클래스*라고 함)는 속성의 getter 및 setter 함수를 제공하고 변경사항을 처리합니다. 대리자 속성은 다음과 같이 `by` 절 및 대리자 클래스 인스턴스를 사용하여 정의됩니다.
+  >
+  > ❓ 프로퍼티 위임을 사용하지 않는다면 ?
+  >
+  > 앱에서 다음과 같이 기본 `GameViewModel` 생성자를 사용하여 뷰 모델을 초기화하는 경우
+  >
+  > ```kotlin
+  > private val viewModel = GameViewModel()
+  > ```
+  >
+  > => 기기에서 구성이 변경되는 동안 앱이 `viewModel` 참조의 상태를 손실하게 됩니다. 예를 들어 기기를 회전하면 활동이 소멸된 후 다시 생성되고 초기 상태의 새로운 뷰 모델 인스턴스가 다시 시작됩니다.
+  >
+  > 대신 속성 위임 접근 방식을 사용해 `viewModel` 객체의 책임을 `viewModels`라는 별도의 클래스에 위임합니다. 즉, `viewModel` 객체에 액세스하면 이 객체는 대리자 클래스 `viewModels`에 의해 내부적으로 처리됩니다. 대리자 클래스는 첫 번째 액세스 시 자동으로 `viewModel` 객체를 만들고 이 값을 구성 변경 중에도 유지했다가 요청이 있을 때 반환합니다.
 
-  <br></br><br></br>
-
-+ Kotlin property delegate
-
-  + 코틀린에는 각 변경 가능한(`var`)  속성에 자동으로 생성된 기본 getter함수와 setter함수가 있습니다. 하지만 읽기 전용(`val`)의 경우 기본적으로 getter함수만 생성됩니다. 
-
-  + 코틀린에서 속성 위임을 사용하면 getter-setter 책임을 다른 클래스에 넘길 수 있습니다. 이 클래스(calleed **delegate class**)는 속성의 getter 및 setter 함수를 제공하고 변경사항을 처리합니다. 
-
-  + delegate property는 다음과 같이 `by` 절 및 대리자 클래스 인스턴스를 사용하여 정의됩니다.
-
-    ```kotlin
-    // Syntax for property delegation
-    var <property-name> : <property-type> by <delegate-class>()
-    ```
-
-  <br></br><br></br>
-
-+ 앱에서 다음과 같이 기본 `GameViewModel()`생성자를 사용하여 뷰 모델을 초기화 하는 경우
-
-  ```kotlin
-  private val viewModel = GameViewModel()
-  ```
-
-  + 기기에서 구성이 변경되는 동안 앱이 `ViewModel` 참조의 상태를 손실하게 됩니다. 예를 들어 기기를 회전하면 활동이 소멸된 후 다시 생성되고 초기 상태의 새로운 뷰 모델 인스턴스가 다시 시작됩니다. 
-
-  <br></br><br></br>
-
-+ 대신 속성 위임 접근 방식을 사용해 ** `viewModel` 객체의 책임을 `viewModels`라는 별도의 클래스에 위임**합니다. 즉, `viewmodel` 객체에 액세스하면 이 객체는 대리자 클래스 `viewModels`에 의해 내부적으로 처리됩니다. 
-
-  대리자 클래스는 첫 번째 액세스 시 자동으로 `viewModel` 객체를 만들고 이 값으로 구성 변경 중에도 유지했다가 요청이 있을 때 반환합니다.  
-
-  <br></br><br></br>
-
-  <br></br>
+<br><br>
 
 ### ViewModel로 데이터 이동하기
 
 + 앱의 UI 데이터를 UI 컨트롤러에서 분리하면 위에서 설명한 단일 책임 원칙을 더 잘 준수할 수 있습니다.  액티비티와 프래그먼트는 화면에 뷰와 데이터를 그리고, `ViewModel`은 UI에 필요한 모든 데이터를 보유하고 처리합니다. 
 
-  <br></br><br></br>
-
 + `GameFragment` 클래스에서 `GameViewModel` 클래스로 데이터 변수를 이동한다.
 
-```kotlin
-class GameViewModel : ViewModel() {
+  ```kotlin
+  class GameViewModel : ViewModel() {
+  
+      private var score = 0
+      private var currentWordCount = 0
+      private var currentScrambledWord = "test"
+  }
+  ```
 
-    private var score = 0
-    private var currentWordCount = 0
-    private var currentScrambledWord = "test"
-}
-```
-
-+ `ViewModel`에서는 데이터를 수정할 수 있어야 하므로 데이터는 `private` 및 `var` 이어야 합니다. `ViewModel` 외부에서는 데이터를 읽을 수 있지만 수정할 수는 없어야 하므로 데이터는 `public` 및 `val`로 노출되어야 합니다. 이를 위해 지원 속성이라는 기능이 있다.
++ `ViewModel`에서는 데이터를 수정할 수 있어야 하므로 **데이터는 `private` 및 `var`** 이어야 합니다. `ViewModel` **외부에서는 데이터를 읽을 수 있지만 수정할 수는 없어야 하므로 데이터는 `public` 및 `val`로 노출되어야 합니다**. 이를 위해 지원 속성이라는 기능이 있다.
 
   <br></br><br></br>
 
-+ 지원 속성
+  + 지원 속성(backing property)
+
 
   ```kotlin
   // Declare private mutable variable that can only be modified
@@ -175,6 +145,7 @@ class GameViewModel : ViewModel() {
     - `_count` 속성이 `private`이며 변경 가능합니다. 따라서 `ViewModel` 클래스 내에서만 액세스하고 수정할 수 있습니다. 이름 지정 규칙은 `private` 속성 앞에 밑줄을 붙이는 것입니다.
   + `ViewModel` 클래스 외부:
     - Kotlin의 기본 공개 상태 한정자는 `public`이므로, `count`는 공개 속성이며 UI 컨트롤러와 같은 다른 클래스에서 액세스할 수 있습니다. `get()` 메서드만 재정의되므로, 이 속성은 변경할 수 없으며 읽기 전용입니다. 외부 클래스가 이 속성에 액세스하면 `_count`의 값을 반환하며, 이 값은 수정할 수 없습니다. 이에 따라 `ViewModel`에 있는 앱 데이터가 외부 클래스로 인해 원치 않게, 안전하지 않게 변경되지 않도록 보호되지만 외부 호출자는 값에 안전하게 액세스할 수 있습니다.
+
 
 <br></br><br></br>
 
