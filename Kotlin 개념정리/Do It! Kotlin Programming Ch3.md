@@ -245,7 +245,7 @@ result = multi(10, 20) // 람다식이 할당된 변수는 함수처럼 사용 �
 + 람다식의 매개변수에 자료형이 지정되어 있다면 변수의 자료형은 생략할 수 있다.
 
   ```kotlin
-  val multi: (Int, Int) -> Int = {x:Int, y:Int -> x * y} // 생략되지 않은 전체 표현
+  
   val multi = {x:Int, y:Int -> x * y} // 변수의 선언 자료형 생략
   val multi: (Int, Int) -> Int = {x, y -> x * y} // 람다식 매개변수 자료형의 생략 
   

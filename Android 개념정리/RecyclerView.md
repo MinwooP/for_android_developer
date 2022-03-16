@@ -215,7 +215,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
 
 
-### DiffUtil과 ListAdapter 이해하고 RecyclerView에 적용하기
+### 🚩 DiffUtil과 ListAdapter 이해하고 RecyclerView에 적용하기
 
 + Recyclerview의 데이터가 변하면 Recyclerview Adapter가 제공하는 `notifyItem`메소드를 사용해서 ViewHolder 내용을 갱신할 수 있습니다.
 + 그런데 데이터가 변경되는 방식을 확인하고 그때마다 이렇게 notify를 일일이 해 주는것은 번거롭기도 하고, 또 사용하기에 따라서는 갱신이 필요없는 ViewHolder를 같이 갱신하는 불필요한 작업이 생길수도 있습니다.
