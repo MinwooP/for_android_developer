@@ -1,8 +1,6 @@
-StartActivityForResult 메서드와 onActivityResult가 Deprecated 되었기 때문에, ActivityLauncher, ActivityResultContracts 를 사용한다. 
+# 🚩Activity 간 이동
 
-<br>
-
-####  📌 startActivityForResult, onActivityResult
+####  📌 startActivityForResult, onActivityResult => Deprecated
 
 ##### startActivityForResult
 
