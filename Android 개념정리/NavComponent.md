@@ -180,3 +180,11 @@
 + `NavigationUI` : `NavHostFragment` 외부 콘텐츠 업데이트를 책임집니다. ex) navigationView, BottomNavBar ? 
 
   => 이를 사용하면 훨씬 간편하게 앱 내 탐색을 만들고 수정할 수 있음.
+
+
+
+
+
+#### 🎈 TODO : 읽어보고 정리하기
+
+https://velog.io/@jaeyunn_15/Android-Navigation-Component

@@ -163,3 +163,81 @@ object SOPTSharedPreferences{
   이 만료기한이 지나게되면 다시 로그인을 해서 서버로부터 사용자 Token을 재발급해야 한다. 만약 지금처럼 자동로그인 로직을 짜버린다면, Token의 기한이 만료되었음에도 불구하고 자동로그인이 되버린다. 
 
   > 원래는 이렇게 입력되는 ID마다 다른 Token을 주지만, 우리는 id 입력 건너뛰고 특정 id에 해당하는 특정 token을 그냥 string으로 헤더에 박아버렸다. 
+
+
+
+
+
+
+
+#### 📌 실제 SharedPreferences를 이용한 자동로그인 설정
+
++ 위에서는 따로 아이디나 비밀번호가 아닌 **AutoLogin상태**만을 SharedPreferences에 저장해 구현했지만, 실제로는 아이디와 비밀번호를 입력받아 이를 SharedPreferences에 저장하고
+
+  ```kotlin
+  if(autoLogin.isChecked()) {
+            // 자동 로그인 데이터 저장
+            SharedPreferences auto = getSharedPreferences("autoLogin", Activity.MODE_PRIVATE);
+            SharedPreferences.Editor autoLoginEdit = auto.edit();
+            autoLoginEdit.putString("userId", userId);
+            autoLoginEdit.putString("passwordNo", passwordNo);
+            autoLoginEdit.putString("userRole", loginInfo.getUserRole());
+            autoLoginEdit.putString("userName", loginInfo.getUserNm());
+            autoLoginEdit.commit();
+  }
+  ```
+
+  나중에 로그인 할 때 자동로그인 설정이 되어있었으면, SharedPreferences에서 이를 불러와 아이디, 비밀번호 입력 창에 넣어주는 것이다.
+
+  ```kotlin
+  // 자동로그인 처리
+  SharedPreferences auto = getSharedPreferences("autoLogin", Activity.MODE_PRIVATE);
+  userId = auto.getString("userId", null);
+  passwordNo = auto.getString("passwordNo", null);
+  
+  // 아이디 비밀번호
+  if(userId != null && passwordNo != null){
+      login(); // 불러온 id와 비밀번호를 저장해 로그인 
+  }else{
+      
+  }
+  ```
+
+
+
+> 참고
+>
+> + [[Android SharedPreferences로 자동 로그인 구현하기](https://pamyferret.tistory.com/21)
+
+
+
+
+
+
+
+❓ 우리가 세미나에서 했던 거는 자동로그인상태값을 SharedPreferences에 저장해 로그인할 때 SharedPreferences에 접근해서 이 자동로그인 상태 값이 true이면 자동으로 다음액티비티로 넘어가게 해줬는데 실제로는 자동로그인이 체크되어있으면 유저의 id와 비밀번호를 SharedPreferences에 저장해서 다음에 앱 접근할 때 이 id와 비밀번호 불러와서 이걸 서버에 보내서 자동으로 로그인되게 하는 식인건가?
+
+=> 맞음
+
+
+
+❓ 아이디, 비밀번호 뿐만 아니라 자동로그인을 체크했는지를 알려주는 자동로그인상태값도 true인지 false인지 따로 저장해서, 처음에 이거에 접근해서 true이면 id랑 비밀번호 불러오고, 아니면 자동로그인 x인건가 ?
+
+=> 맞음
+
+
+
+마져 소셜은 아이디랑 비번 저장할 필요없응께 ! 다른 프로젝트에서는 매번 로그인할때마다 엑세스, 리프레쉬 토큰을 넘겨줘야해서 얘네는 로그인할때 유저 데이터를 싱글톤 클래스에 저장해두고 계속 사용했었고, 자동로그인할때는 그냥 최초로그인 이력만 있으면 바로 엑세스, 리프레쉬 토큰발급받아서 싱글톤 클래스에 저장해두고 계속 썻어 (최초로그인 여부만 SharedPreferences에 저장햇었구!)
+
+
+
+=> 그럼 우리는 최초로그인 여부를 SharedPreferences에 저장해놓고, 이게 true이면, 싱글톤 객체에 정의되어있는 엑세스, 리프레쉬 토큰 얻어오는 메서드를 실행시켜서, 엑세스, 리프레쉬 토큰 얻어와서 이를 싱글톤 객체에 저장하고, 앱에서 사용할 때는 이 싱글톤 객체에 접근해서 사용
+
+=> 싱글톤 객체안에 id, refreshtoken, accessToken이 있는 거고 
+서버 통신해서 id, refreshtoken, accessToken의 값을 변경해주는 loginWithKaKao 메서드도 싱글톤 객체안에 선언해주는 거구나
+
+
+
+자동로그인이 체크되어있으면->원래는 유저가 카카오로시작하기 버튼눌러야 실행되는 로직인, 카카오서버에서 엑세스,리프레시 토큰얻어오는 메서드(이는 싱글톤 객체에 정의되어있음)을 자동로그인에서는 걍 바로 실행시켜서->얻어온 엑세스 토큰, 리프레쉬 토킅을 싱글톤 클래스에 저장하고->저장한것들을 매번 api호출에서 가져다 쓴다
+
+어찌됐든 자동로그인이든 그냥로그인이든 액세스랑 리프레쉬 토큰은 그때마다 새로 얻어와야하는거고, 이걸 이제 실행되는 동안은 싱글톤 객체에 저장해서 쓴다는거지?
